@@ -177,6 +177,20 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+app.post('/deleteItem', (req, res) => {
+    const itemId = req.body.itemId;
+    const sql = "DELETE FROM items WHERE itemId = ?";
+
+    db.query(sql, [itemId], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error deleting item');
+        }
+        res.redirect('/list'); // Redirect to your list page after delete
+    });
+});
+
+
 // Starting the server
 app.listen(3000, () => {
     console.log('Server started on port 3000');
