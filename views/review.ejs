@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Reviews - Team42</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Team42</a>
+        <div class="d-flex">
+            <a href="/" class="btn btn-outline-light me-2">Home</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Submit Your Movie Review</h2>
+
+    <!-- Review Form -->
+    <form action="/addItem" method="POST" class="mb-5">
+        <div class="mb-3">
+            <label for="movieName" class="form-label">Movie Name</label>
+            <input type="text" class="form-control" id="movieName" name="movieName" required>
+        </div>
+        <div class="mb-3">
+            <label for="userName" class="form-label">Your Name</label>
+            <input type="text" class="form-control" id="userName" name="userName" required>
+        </div>
+        <div class="mb-3">
+            <label for="rating" class="form-label">Rating</label>
+            <select class="form-select" id="rating" name="rating" required>
+                <option value="">Select rating</option>
+                <option value="1">1 Star</option>
+                <option value="2">2 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="5">5 Stars</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="comment" class="form-label">Comment</label>
+            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+
+    <!-- Review List -->
+    <h3 class="mb-3">All Reviews</h3>
+    <% if (reviews.length === 0) { %>
+        <p>No reviews yet. Be the first to write one!</p>
+    <% } else { %>
+        <% reviews.forEach(review => { %>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><%= review.movieName %></h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Rating: <%= review.rating %> Star(s)</h6>
+                    <p class="card-text"><%= review.comment %></p>
+                    <small class="text-muted">By <%= review.userName %> on <%= new Date(review.created_at).toLocaleString() %></small>
+                </div>
+            </div>
+        <% }); %>
+    <% } %>
+</div>
+
+</body>
+</html>
