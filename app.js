@@ -190,6 +190,33 @@ app.post('/deleteItem', (req, res) => {
     });
 });
 
+app.post('/addItem', (req, res) => {
+    const { movieName, userName, rating, comment } = req.body;
+    const sql = "INSERT INTO movie_reviews (movieName, userName, rating, comment) VALUES (?, ?, ?, ?)";
+
+    db.query(sql, [movieName, userName, rating, comment], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error adding review');
+        }
+        res.redirect('/reviews'); // Redirect to reviews page
+    });
+});
+
+
+app.get('/reviews', (req, res) => {
+    const sql = "SELECT * FROM movie_reviews ORDER BY created_at DESC";
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error fetching reviews');
+        }
+        res.render('reviews', { reviews: results });
+    });
+});
+
+
+
 
 // Starting the server
 app.listen(3000, () => {
