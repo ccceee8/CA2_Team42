@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - SoleStep Shoes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .container { background: white; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; max-width: 400px; overflow: hidden; }
+        .header { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; padding: 25px; text-align: center; }
+        .logo { font-size: 24px; font-weight: bold; margin-bottom: 8px; }
+        .form { padding: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-row { display: flex; gap: 10px; }
+        .form-row .form-group { flex: 1; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 6px; font-size: 14px; background: #f8f9fa; transition: all 0.3s; }
+        input:focus, select:focus { outline: none; border-color: #667eea; background: white; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .checkbox { display: flex; align-items: center; gap: 8px; margin: 15px 0; }
+        .checkbox input { width: auto; margin: 0; }
+        .checkbox label { margin: 0; font-size: 13px; color: #666; }
+        .btn { width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); }
+        .error { color: #e74c3c; font-size: 12px; margin-top: 3px; display: none; }
+        .success { background: #d4edda; color: #155724; padding: 10px; border-radius: 6px; margin-bottom: 15px; display: none; }
+        .login-link { text-align: center; margin-top: 20px; font-size: 14px; color: #666; }
+        .login-link a { color: #667eea; text-decoration: none; }
+        @media (max-width: 480px) { .form-row { flex-direction: column; gap: 0; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">👟 SoleStep</div>
+            <p>Join our shoe community</p>
+        </div>
+        
+        <form class="form" id="registerForm">
+            <div class="success" id="success">Registration successful! Welcome to SoleStep!</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                    <div class="error" id="firstNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                    <div class="error" id="lastNameError"></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                <div class="error" id="emailError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <div class="error" id="passwordError"></div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="shoeSize">Shoe Size</label>
+                    <select id="shoeSize" name="shoeSize" required>
+                        <option value="">Select Size</option>
+                        <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                        <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select</option>
+                        <option value="male">Male</option><option value="female">Female</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="checkbox">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to Terms & Privacy Policy</label>
+                <div class="error" id="termsError"></div>
+            </div>
+            
+            <button type="submit" class="btn">Create Account</button>
+            
+            <div class="login-link">
+                Already have an account? <a href="/login">Sign in</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearErrors();
+            const data = new FormData(this);
+            let isValid = true;
+            
+            if (!data.get('firstName') || data.get('firstName').length < 2) {
+                showError('firstNameError', 'First name required (2+ chars)');
+                isValid = false;
+            }
+            if (!data.get('lastName') || data.get('lastName').length < 2) {
+                showError('lastNameError', 'Last name required (2+ chars)');
+                isValid = false;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.get('email'))) {
+                showError('emailError', 'Valid email required');
+                isValid = false;
+            }
+            if (data.get('password').length < 6) {
+                showError('passwordError', 'Password must be 6+ characters');
+                isValid = false;
+            }
+            if (!data.get('terms')) {
+                showError('termsError', 'Must agree to terms');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                document.getElementById('success').style.display = 'block';
+                console.log('Registration data:', Object.fromEntries(data));
+                setTimeout(() => { this.reset(); document.getElementById('success').style.display = 'none'; }, 3000);
+            }
+        });
+        
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(el => el.style.display = 'none');
+        }
+    </script>
+</body>
+</html>
