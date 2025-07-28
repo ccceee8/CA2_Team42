@@ -178,41 +178,43 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+// Delete shoes 
 app.post('/deleteItem', (req, res) => {
     const itemId = req.body.itemId;
-    const sql = "DELETE FROM items WHERE itemId = ?";
+    const sql = "DELETE FROM shoe_reviews WHERE itemId = ?";
 
     db.query(sql, [itemId], (err, result) => {
         if (err) {
             console.error(err);
-            return res.status(500).send('Error deleting item');
+            return res.status(500).send('Error deleting review');
         }
-        res.redirect('/list'); // Redirect to your list page after delete
+        res.redirect('/shoeList'); 
     });
 });
 
+// Add a new shoe review
 app.post('/addItem', (req, res) => {
-    const { movieName, userName, rating, comment } = req.body;
-    const sql = "INSERT INTO movie_reviews (movieName, userName, rating, comment) VALUES (?, ?, ?, ?)";
+    const { shoeName, userName, rating, comment } = req.body;
+    const sql = "INSERT INTO shoe_reviews (shoeName, userName, rating, comment) VALUES (?, ?, ?, ?)";
 
-    db.query(sql, [movieName, userName, rating, comment], (err, result) => {
+    db.query(sql, [shoeName, userName, rating, comment], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).send('Error adding review');
         }
-        res.redirect('/reviews'); // Redirect to reviews page
+        res.redirect('/review');
     });
 });
 
-
+// Get all shoe reviews
 app.get('/reviews', (req, res) => {
-    const sql = "SELECT * FROM movie_reviews ORDER BY created_at DESC";
+    const sql = "SELECT * FROM shoe_reviews ORDER BY created_at DESC";
     db.query(sql, (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).send('Error fetching reviews');
         }
-        res.render('reviews', { reviews: results });
+        res.render('reviews', { review: results });
     });
 });
 
