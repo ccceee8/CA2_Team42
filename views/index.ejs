@@ -3,36 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome to Sneaker Store</title>
-    <link rel="stylesheet" href="/styles.css"> <!-- Link to your CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+   
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .welcome-card {
+            margin-top: 60px;
+        }
+        .hero-text {
+            font-size: 1.25rem;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Sneaker Store</h1>
-        <% if (user) { %>
-            <p>Hello, <%= user.username %>!</p>
-            <a href="/dashboard">Go to Dashboard</a> |
-            <a href="/logout">Logout</a>
-        <% } else { %>
-            <a href="/login">Login</a> |
-            <a href="/register">Register</a>
-        <% } %>
-    </header>
 
-    <% if (messages && messages.length > 0) { %>
-        <div class="flash-success">
-            <% messages.forEach(function(message) { %>
-                <p><%= message %></p>
-            <% }); %>
+ 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">SneakerStore</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <% if (user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Logout</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
         </div>
-    <% } %>
+    </nav>
 
-    <main>
-        <p>Browse our latest sneaker collections and reviews.</p>
-        <a href="/reviews">View Shoe Reviews</a>
-    </main>
+    
+    <div class="container welcome-card">
+        <div class="card shadow-sm p-4">
+            <h2 class="mb-3 text-center">Welcome to Sneaker Store</h2>
 
-    <footer>
-        <p>&copy; 2025 Sneaker Store</p>
-    </footer>
+            <% if (user) { %>
+                <p class="text-center hero-text">Hi <strong><%= user.username %></strong>, ready to check out the latest shoes?</p>
+                <div class="text-center mt-4">
+                    <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+                </div>
+            <% } else { %>
+                <p class="text-center hero-text">Join the ultimate sneaker community. Sign in or register to get started.</p>
+                <div class="text-center mt-4">
+                    <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+                    <a href="/register" class="btn btn-primary">Register</a>
+                </div>
+            <% } %>
+
+            <% if (messages && messages.length > 0) { %>
+                <div class="alert alert-success mt-4">
+                    <% messages.forEach(function(msg) { %>
+                        <p><%= msg %></p>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
