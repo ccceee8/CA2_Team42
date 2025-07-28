@@ -143,19 +143,20 @@ app.post('/login', (req, res) => {
 });
 
 // Edit shoe
-app.get('/shoes/edit/:id', checkAuthenticated, checkAdmin, (req, res) => {
+app.get('/edit', checkAuthenticated, checkAdmin, (req, res) => {
+    const id = req.query.id;
     const sql = 'SELECT * FROM Product WHERE productID = ?';
-    db.query(sql, [req.params.id], (err, results) => {
+    db.query(sql, [id], (err, results) => {
         if (err) throw err;
         res.render('editShoe', { shoe: results[0], user: req.session.user });
     });
 });
 
-app.post('/shoes/edit/:id', upload.single('image'), (req, res) => {
-    const { productName, brand, size, price, quantity } = req.body;
-    const image = req.file ? req.file.filename : req.body.currentImage;
+app.post('/edit', upload.single('image'), (req, res) => {
+    const { productID, productName, brand, size, price, quantity, currentImage } = req.body;
+    const image = req.file ? req.file.filename : currentImage;
     const sql = 'UPDATE Product SET productName=?, brand=?, size=?, price=?, quantity=?, image=? WHERE productID = ?';
-    db.query(sql, [productName, brand, size, price, quantity, image, req.params.id], (err) => {
+    db.query(sql, [productName, brand, size, price, quantity, image, productID], (err) => {
         if (err) throw err;
         res.redirect('/shoes');
     });
