@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Sneaker Store</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Link to your CSS -->
+</head>
+<body>
+    <header>
+        <h1>Welcome to Sneaker Store</h1>
+        <% if (user) { %>
+            <p>Hello, <%= user.username %>!</p>
+            <a href="/dashboard">Go to Dashboard</a> |
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a> |
+            <a href="/register">Register</a>
+        <% } %>
+    </header>
+
+    <% if (messages && messages.length > 0) { %>
+        <div class="flash-success">
+            <% messages.forEach(function(message) { %>
+                <p><%= message %></p>
+            <% }); %>
+        </div>
+    <% } %>
+
+    <main>
+        <p>Browse our latest sneaker collections and reviews.</p>
+        <a href="/reviews">View Shoe Reviews</a>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Sneaker Store</p>
+    </footer>
+</body>
+</html>
