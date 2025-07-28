@@ -134,25 +134,40 @@ app.post('/login', (req, res) => {
         return res.redirect('/login');
     }
 
-    const sql = 'SELECT * FROM users WHERE email = ? AND password = SHA1(?)';
-    db.query(sql, [email, password], (err, results) => {
-        if (err) {
-            throw err;
-        }
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        req.flash('error', 'Please enter a valid email address.');
+        return res.redirect('/login');
+    }
 
-        if (results.length > 0) {
-            // Successful login
-            req.session.user = results[0]; // store user in session
-            req.flash('success', 'Login successful!');
-            //******** TO DO: Update to redirect users to /dashboard route upon successful log in ********//
-            res.redirect('/dashboard');
-        } else {
-            // Invalid credentials
-            req.flash('error', 'Invalid email or password.');
-            res.redirect('/login');
-        }
-    });
+    const sql = 'SELECT * FROM users WHERE email = ? AND password = SHA1(?)';
+    try {
+        db.query(sql, [email, password], (err, results) => {
+            if (err) {
+                console.error('Database error:', err);
+                req.flash('error', 'An error occurred during login. Please try again.');
+                return res.redirect('/login');
+            }
+
+            if (results.length > 0) {
+                // Successful login
+                req.session.user = results[0]; // store user in session
+                req.flash('success', 'Login successful!');
+                res.redirect('/dashboard');
+            } else {
+                // Invalid credentials
+                req.flash('error', 'Invalid email or password.');
+                res.redirect('/login');
+            }
+        });
+    } catch (error) {
+        console.error('Server error:', error);
+        req.flash('error', 'An unexpected error occurred. Please try again.');
+        res.redirect('/login');
+    }
 });
+
 
 // Edit shoe
 app.post('/edit', upload.single('image'), (req, res) => {
