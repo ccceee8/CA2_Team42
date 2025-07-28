@@ -197,7 +197,7 @@ app.post('/addItem', (req, res) => {
     const { shoeName, userName, rating, comment } = req.body;
     const sql = "INSERT INTO shoe_reviews (shoeName, userName, rating, comment) VALUES (?, ?, ?, ?)";
 
-    db.query(sql, [shoeName, userName, rating, comment], (err, result) => {
+    db.query(sql, [productName, brand, size, comment], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).send('Error adding review');
