@@ -87,32 +87,73 @@ app.get('/register', (req, res) => {
 const validateRegistration = (req, res, next) => {
     const { username, email, password, address, contact } = req.body;
 
+    // Check if all required fields are present
     if (!username || !email || !password || !address || !contact) {
-        return res.status(400).send('All fields are required.');
-    }
-    
-    if (password.length < 6) {
-        req.flash('error', 'Password should be at least 6 or more characters long');
+        req.flash('error', 'All fields are required.');
         req.flash('formData', req.body);
         return res.redirect('/register');
     }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        req.flash('error', 'Please enter a valid email address.');
+        req.flash('formData', req.body);
+        return res.redirect('/register');
+    }
+
+    // Validate password
+    if (password.length < 6) {
+        req.flash('error', 'Password should be at least 6 characters long');
+        req.flash('formData', req.body);
+        return res.redirect('/register');
+    }
+
+    // Validate username length
+    if (username.length < 3) {
+        req.flash('error', 'Username should be at least 3 characters long');
+        req.flash('formData', req.body);
+        return res.redirect('/register');
+    }
+
     next();
 };
 
 
 //******** TODO: Integrate validateRegistration into the register route. ********//
 app.post('/register', validateRegistration, (req, res) => {
-    //******** TODO: Update register route to include role. ********//
-    const { username, email, password, address, contact, role} = req.body;
+    const { username, email, password, address, contact, role = 'user' } = req.body; // Default role to 'user'
 
-    const sql = 'INSERT INTO users (username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
-    db.query(sql, [username, email, password, address, contact, role], (err, result) => {
+    // First check if email already exists
+    const checkEmailSql = 'SELECT email FROM users WHERE email = ?';
+    db.query(checkEmailSql, [email], (err, results) => {
         if (err) {
-            throw err;
+            console.error('Database error:', err);
+            req.flash('error', 'An error occurred during registration.');
+            req.flash('formData', req.body);
+            return res.redirect('/register');
         }
-        console.log(result);
-        req.flash('success', 'Registration successful! Please log in.');
-        res.redirect('/login');
+
+        if (results.length > 0) {
+            req.flash('error', 'Email already registered. Please use a different email.');
+            req.flash('formData', req.body);
+            return res.redirect('/register');
+        }
+
+        // If email doesn't exist, proceed with registration
+        const sql = 'INSERT INTO users (username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
+        db.query(sql, [username, email, password, address, contact, role], (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+                req.flash('error', 'An error occurred during registration.');
+                req.flash('formData', req.body);
+                return res.redirect('/register');
+            }
+            
+            console.log('User registered:', email);
+            req.flash('success', 'Registration successful! Please log in.');
+            res.redirect('/login');
+        });
     });
 });
 
