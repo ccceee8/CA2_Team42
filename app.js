@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
+const multer = require('multer');
 
 //******** TODO: Insert code to import 'express-session' *********//
 const session = require('express-session');
@@ -60,6 +61,17 @@ const checkAdmin = (req, res, next) => {
         res.redirect('/dashboard');
     }
 };
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads'); // Ensure this directory exists
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+const upload = multer({ storage });
 
 // Routes
 app.get('/', (req, res) => {
@@ -143,21 +155,24 @@ app.post('/login', (req, res) => {
 });
 
 // Edit shoe
-app.get('/edit', checkAuthenticated, checkAdmin, (req, res) => {
-    const id = req.query.id;
-    const sql = 'SELECT * FROM Product WHERE productID = ?';
-    db.query(sql, [id], (err, results) => {
-        if (err) throw err;
-        res.render('editShoe', { shoe: results[0], user: req.session.user });
-    });
-});
-
 app.post('/edit', upload.single('image'), (req, res) => {
     const { productID, productName, brand, size, price, quantity, currentImage } = req.body;
     const image = req.file ? req.file.filename : currentImage;
+
+    // Validate input fields
+    if (!productID || !productName || !brand || !size || !price || !quantity) {
+        req.flash('error', 'All fields are required');
+        return res.redirect(`/edit?id=${productID}`);
+    }
+
     const sql = 'UPDATE Product SET productName=?, brand=?, size=?, price=?, quantity=?, image=? WHERE productID = ?';
     db.query(sql, [productName, brand, size, price, quantity, image, productID], (err) => {
-        if (err) throw err;
+        if (err) {
+            console.error(err);
+            req.flash('error', 'Error updating product');
+            return res.redirect(`/edit?id=${productID}`);
+        }
+        req.flash('success', 'Product updated successfully');
         res.redirect('/shoes');
     });
 });
