@@ -218,7 +218,32 @@ app.get('/reviews', (req, res) => {
     });
 });
 
+// View a single shoe by ID
+app.get('/shoe/:id', checkAuthenticated, (req, res) => {
+    const shoeId = parseInt(req.params.id, 10);
+    if (Number.isNaN(shoeId)) {
+        return res.status(400).send('Invalid shoe ID');
+    }
 
+    const sql = 'SELECT * FROM Product WHERE productID = ?';
+    db.query(sql, [shoeId], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Database error');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('Shoe not found');
+        }
+
+        res.render('shoe', {
+            shoe: results[0],
+            user: req.session.user,
+            messages: req.flash('success'),
+            errors: req.flash('error')
+        });
+    });
+});
 
 
 // Starting the server

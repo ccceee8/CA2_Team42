@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= shoe.productName %> - Details</title>
+</head>
+<body>
+    <h1><%= shoe.productName %></h1>
+
+    <% if (shoe.image) { %>
+        <img src="/images/<%= shoe.image %>" alt="Image of <%= shoe.productName %>" width="300">
+    <% } %>
+
+    <p><strong>Brand:</strong> <%= shoe.brand %></p>
+    <p><strong>Size:</strong> <%= shoe.size %></p>
+    <p><strong>Price:</strong> $<%= shoe.price %></p>
+    <p><strong>Quantity in Stock:</strong> <%= shoe.quantity %></p>
+
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>
