@@ -2,80 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard | Sneaker Store</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .dashboard-card {
-            margin-top: 60px;
-        }
-        .user-info p {
-            margin-bottom: 5px;
-        }
-    </style>
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">SneakerStore</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <% if (user.role === 'admin') { %>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin">Admin Panel</a>
-                        </li>
-                    <% } %>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/reviews">Reviews</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Dashboard Content -->
-    <div class="container dashboard-card">
-        <div class="card shadow-sm p-4">
-            <h2 class="mb-3 text-center">Welcome, <%= user.username %>!</h2>
-
-            <% if (messages && messages.length > 0) { %>
-                <div class="alert alert-success">
-                    <% messages.forEach(function(msg) { %>
-                        <p><%= msg %></p>
-                    <% }); %>
-                </div>
-            <% } %>
-
-            <div class="user-info">
-                <h5>Your Profile Details:</h5>
-                <p><strong>Email:</strong> <%= user.email %></p>
-                <p><strong>Contact:</strong> <%= user.contact %></p>
-                <p><strong>Address:</strong> <%= user.address %></p>
-                <p><strong>Role:</strong> <%= user.role %></p>
-            </div>
-
-            <div class="mt-4">
-                <a href="/reviews" class="btn btn-outline-primary">View Shoe Reviews</a>
-                <% if (user.role === 'admin') { %>
-                    <a href="/admin" class="btn btn-primary ms-2">Go to Admin Panel</a>
-                <% } %>
-            </div>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Sneaker Store</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shoes">Shoe List</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+            </ul>
         </div>
     </div>
+</nav>
 
-    <!-- Bootstrap JS (Optional) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- MAIN CONTENT -->
+<div class="container mt-5 text-center">
+    <h1>Welcome, <%= user.username %>!</h1>
+    <p class="lead">This is your dashboard.</p>
+
+    <!-- Flash Messages -->
+    <% const safeMessages = messages || []; %>
+    <% if (safeMessages.length > 0) { %>
+        <div class="alert alert-info mt-3">
+            <% safeMessages.forEach(function(message) { %>
+                <p><%= message %></p>
+            <% }) %>
+        </div>
+    <% } %>
+
+    <!-- Role-Based Buttons -->
+    <div class="mt-4">
+        <% if (user.role === 'admin') { %>
+        <a href="/addshoe" class="btn btn-primary">Add Shoe</a>
+        <% } %>
+        <a href="/shoes" class="btn btn-primary">View Shoes</a>
+    </div>
+</div>
 
 </body>
 </html>
