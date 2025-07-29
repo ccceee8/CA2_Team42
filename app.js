@@ -160,7 +160,7 @@ app.get('/viewshoe/:id', checkAuthenticated, (req, res) => {
     db.query('SELECT * FROM Product WHERE productID = ?', [shoeId], (err, results) => {
         if (err) throw err;
         if (results.length === 0) return res.send('Shoe not found.');
-        res.render('viewshoe', { shoe: results[0] });
+        res.render('viewShoe', { shoe: results[0] });
     });
 });
 
