@@ -137,7 +137,7 @@ app.get('/shoes', checkAuthenticated, (req, res) => {
 
 // Add Shoe page
 app.get('/addshoe', checkAdmin, (req, res) => {
-  res.render('addshoe');
+  res.render('addShoe');
 });
 
 // Handle Add Shoe POST
@@ -170,7 +170,7 @@ app.get('/editshoe/:id', checkAdmin, (req, res) => {
   db.query('SELECT * FROM Product WHERE productID = ?', [shoeId], (err, results) => {
     if (err) throw err;
     if (results.length === 0) return res.send('Shoe not found.');
-    res.render('editshoe', { shoe: results[0] });
+    res.render('editShoe', { shoe: results[0] });
   });
 });
 
